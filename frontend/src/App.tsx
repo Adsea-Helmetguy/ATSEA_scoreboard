@@ -489,7 +489,14 @@ function App() {
                       type="button"
                       onMouseDown={(event) => event.preventDefault()}
                       onClick={() => {
-                        setDraft({ ...draft, gameTitle });
+                        const nextRoster = gameRosters[gameTitle] ?? [];
+                        const firstCharacter = nextRoster[0] ?? "";
+                        setDraft({
+                          ...draft,
+                          gameTitle,
+                          left: {...draft.left, character: firstCharacter},
+                          right: {...draft.right, character: firstCharacter},
+                        });
                         setIsGameMenuOpen(false);
                       }}
                     >
@@ -684,24 +691,50 @@ function PlayerEditor({
         />
       </label>
       <label>
-        Select Character
+        Select Character (Based on the game)
         {roster.length > 0 ? (
-          <select
-            value={player.character}
-            onChange={(event) =>
-              onUpdate(side, { character: event.target.value })
-            }
-          >
-            <option value="">Player character</option>
-            {roster.map((character) => (
-              <option key={character} value={character}>
-                {character}
-              </option>
-            ))}
-          </select>
+          <>
+            <select
+              value={
+                player.character === ""
+                  ? ""
+                  : roster.includes(player.character)
+                    ? player.character
+                    : "__custom__"
+              }
+              onChange={(event) => {
+                const value = event.target.value
+
+                onUpdate(side, {
+                  character: value === "__custom__" ? "" : value,
+                })
+              }}
+            >
+              <option value="">Player character</option>
+
+              {roster.map((character) => (
+                <option key={character} value={character}>
+                  {character}
+                </option>
+              ))}
+
+              <option value="__custom__">Others (Type the name)</option>
+            </select>
+
+            {!roster.includes(player.character) && (
+              <input
+                value={player.character}
+                placeholder="Type character name"
+                onChange={(event) =>
+                  onUpdate(side, { character: event.target.value })
+                }
+              />
+            )}
+          </>
         ) : (
           <input
             value={player.character}
+            placeholder="Player character"
             onChange={(event) =>
               onUpdate(side, { character: event.target.value })
             }
