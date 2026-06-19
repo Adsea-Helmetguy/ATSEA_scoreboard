@@ -4,6 +4,7 @@ export type Player = {
   name: string;
   score: number;
   character: string;
+  sideCharactersUsed?: string; // Optional property to track characters used on each side
 };
 
 export type MatchState = {
@@ -33,11 +34,13 @@ export function createDefaultMatchState(): MatchState {
       name: "",
       score: 0,
       character: "",
+      sideCharactersUsed: "",
     },
     right: {
       name: "",
       score: 0,
       character: "",
+      sideCharactersUsed: "",
     },
     updatedAt: new Date().toISOString(),
   };

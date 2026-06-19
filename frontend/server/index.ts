@@ -8,6 +8,7 @@ type Player = {
   name: string;
   score: number;
   character: string;
+  sideCharactersUsed: string;
 };
 
 type MatchState = {
@@ -38,8 +39,8 @@ let matchState: MatchState = {
   gameTitle: "",
   round: "Round 1",
   bestOf: "First to 3",
-  left: { name: "", score: 0, character: "" },
-  right: { name: "", score: 0, character: "" },
+  left: { name: "", score: 0, character: "", sideCharactersUsed: "" },
+  right: { name: "", score: 0, character: "", sideCharactersUsed: "" },
   updatedAt: new Date().toISOString(),
 };
 

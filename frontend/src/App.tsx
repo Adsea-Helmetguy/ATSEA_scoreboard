@@ -677,6 +677,8 @@ function PlayerEditor({
   onUpdate,
   onScore,
 }: PlayerEditorProps) {
+  const [isCharacterMenuOpen, setIsCharacterMenuOpen] = useState(false);
+
   return (
     <section className="player-editor">
       <div className="player-editor-title">
@@ -741,87 +743,71 @@ function PlayerEditor({
           />
         )}
       </label>
-      <label>
-        WORK ON THIS OKEYYY
-        {(
-          <input
-            value={player.character}
-            onChange={(event) =>
-              onUpdate(side, { character: event.target.value })
-            }
-          />
-        )}
-      </label>
-      {/* 
-      <label>
-        WORK ON THIS OKEYYY
-        {roster.length > 0 ? (
-          <select
-            value={player.character}
-            onChange={(event) =>
-              onUpdate(side, { character: event.target.value })
-            }
-          >
-            <option value="">Player character</option>
-            {roster.map((character) => (
-              <option key={character} value={character}>
-                {character}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <input
-            value={player.character}
-            onChange={(event) =>
-              onUpdate(side, { character: event.target.value })
-            }
-          />
-        )}
-      </label>
-      */}
-      {/* 
       <label className="game-title-field">
-        Game Title
+        Side Character(s) used (Can manually type in too)
         <div className="game-title-input-row">
           <input
-            value={draft.gameTitle}
-            onBlur={() =>
-              window.setTimeout(() => setIsGameMenuOpen(false), 120)
-            }
-            onChange={(event) => {
-              setDraft({ ...draft, gameTitle: event.target.value });
-              setIsGameMenuOpen(false);
-            }}
+            value={player.sideCharactersUsed}
+            onChange={(event) => 
+              onUpdate(side, { sideCharactersUsed: event.target.value }
+            )}
           />
-          <button
+          <button 
             type="button"
-            aria-label={
-              isGameMenuOpen ? "Hide game list" : "Show game list"
-            }
+            aria-label={ isCharacterMenuOpen ? "Hide character list" : "Show character list" }
             onMouseDown={(event) => event.preventDefault()}
-            onClick={() => setIsGameMenuOpen((isOpen) => !isOpen)}
+            onClick={() => setIsCharacterMenuOpen((isOpen) => !isOpen)}
           >
-            {isGameMenuOpen ? "Hide" : "List"}
+            {isCharacterMenuOpen ? "Hide" : "List"}
           </button>
         </div>
-        {isGameMenuOpen && (
+        {isCharacterMenuOpen && (
           <div className="game-title-menu">
-            {Object.keys(gameRosters).map((gameTitle) => (
+            {roster.map((character) => (
               <button
-                key={gameTitle}
+                key={character}
                 type="button"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => {
-                  setDraft({ ...draft, gameTitle });
-                  setIsGameMenuOpen(false);
+                  const nextValue = player.sideCharactersUsed
+                    ? `${player.sideCharactersUsed}, ${character}`
+                    : character;
+
+                  onUpdate(side, {
+                    sideCharactersUsed: nextValue,
+                  });
+                  setIsCharacterMenuOpen(false);
                 }}
               >
-                {gameTitle}
+                {character}
               </button>
             ))}
           </div>
         )}
-      </label> 
+      </label>
+      {/* 
+      <div className="game-title-input-row">
+                <input
+                  value={draft.gameTitle}
+                  onBlur={() =>
+                    window.setTimeout(() => setIsGameMenuOpen(false), 120)
+                  }
+                  onChange={(event) => {
+                    setDraft({ ...draft, gameTitle: event.target.value });
+                    setIsGameMenuOpen(false);
+                  }}
+                />
+                <button
+                  type="button"
+                  aria-label={
+                    isGameMenuOpen ? "Hide game list" : "Show game list"
+                  }
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => setIsGameMenuOpen((isOpen) => !isOpen)}
+                >
+                  {isGameMenuOpen ? "Hide" : "List"}
+                </button>
+      </div> 
       */}
       <div
         className="score-controls"
