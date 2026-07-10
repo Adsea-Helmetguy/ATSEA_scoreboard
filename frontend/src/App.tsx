@@ -297,11 +297,80 @@ function App() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     setDraft(next);
     sendState(next);
+
+    // Checks if match is active, then updates the match details.
+    if (activeRecording) {
+      // recordings is the target
+      // .map() is an array method that lets you go through every item and return a new array
+      // "recording" inside the map() is your own variable name for each loop.
+      // Take recording as input, .map() needs a function and it needs instructions for what to do with each item.
+      const nextRecordings = recordings.map((recording) => {
+        // return either the same recording
+        // or an updated version of this recording
+        // current recording from loop || Active recording from component
+        // remmeber, you can use id because of the line:
+        // const [recordings, setRecordings] = useState<MatchRecording[]>(()
+        // activeRecording searchs for the first one that hasn't ended yet, thus the id:
+        if (recording.id !== activeRecording.id) {
+          return recording;
+        }
+
+        // what are you returning? What field are you replacing?
+        // Think about Recorded matches, where is it? hint: "recording.ts"
+        // also remember, since you are returning an "OBJECT", parentheses is -> {}
+        return {
+          ...recording,
+          startedState : next,
+        }
+      });
+
+      // Why this? Because whenever you call saveRecordings,
+      // You are updating the official recordings list, from: "function saveRecordings(nextRecordings: MatchRecording[])"
+      // "Store it and show it."
+      saveRecordings(nextRecordings);
+    }
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+    // Check if the match is currently active(Then update the recording)
+    if (activeRecording) {
+      const nextRecordings = recordings.map((recording) => {
+        if (recording.id !== activeRecording.id) {
+          return recording;
+        }
+
+        // Returns the copied version, but replaces "startedState".
+        return {
+          ...recording,
+          startedState: next,
+        };
+      });
+
+      saveRecordings(nextRecordings);
+    }
+*/
+
+  // Purpose, to store and show the new recorded list in recorded.
   function saveRecordings(nextRecordings: MatchRecording[]) {
     const trimmedRecordings = nextRecordings.slice(0, 100);
 
+    //localStorage cannot store unless it's a string. When the app loads, you can parse it back to JSON.
+    // e.g of string: "[{\"id\":\"abc\",\"startedAt\":\"2026-07-10T12:00:00.000Z\"}]"
     localStorage.setItem(RECORDINGS_KEY, JSON.stringify(trimmedRecordings));
     setRecordings(trimmedRecordings);
   }
@@ -396,8 +465,12 @@ function App() {
   function getPlayerTimelineLabel(player: Player, fallbackName: string) {
     const name = player.name || fallbackName;
     const character = player.character || "Unknown";
+    let sideCharactersUsed = player.sideCharactersUsed || "";
 
-    return `${name}(${character})`;
+    if (sideCharactersUsed) {
+      sideCharactersUsed = ` && (${sideCharactersUsed})`;
+    }
+    return `${name} [${character}${sideCharactersUsed}]`;
   }
 
   // =====For tournament timer controls=====
@@ -634,6 +707,7 @@ function App() {
           <button
               type="button"
               className={activeRecording ? "record-button is-recording" : "record-button"}
+              disabled={Boolean(!isTournamentRunning)}
               onClick={activeRecording ? endMatch : startMatch}
             >
               {activeRecording ? "End match" : "Start match"}
