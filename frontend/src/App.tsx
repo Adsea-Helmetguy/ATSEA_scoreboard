@@ -331,40 +331,6 @@ function App() {
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-    // Check if the match is currently active(Then update the recording)
-    if (activeRecording) {
-      const nextRecordings = recordings.map((recording) => {
-        if (recording.id !== activeRecording.id) {
-          return recording;
-        }
-
-        // Returns the copied version, but replaces "startedState".
-        return {
-          ...recording,
-          startedState: next,
-        };
-      });
-
-      saveRecordings(nextRecordings);
-    }
-*/
-
   // Purpose, to store and show the new recorded list in recorded.
   function saveRecordings(nextRecordings: MatchRecording[]) {
     const trimmedRecordings = nextRecordings.slice(0, 100);
@@ -378,6 +344,15 @@ function App() {
   function clearRecordings() {
     localStorage.removeItem(RECORDINGS_KEY);
     setRecordings([]);
+  }
+
+  function removeRecord(id: string) {
+    if (activeRecording) {
+      console.log("No matches are allowed to be deleted while start match is active.");
+      return ;
+    }
+    const nextRecordings = recordings.filter((recording) => recording.id !== id);
+    saveRecordings(nextRecordings);
   }
 
   function startMatch() {
@@ -717,7 +692,7 @@ function App() {
           <div className="history-list">
             <div className="history-heading">
               <div>
-                <p className="eyebrow">Audit Log</p>
+                <p className="eyebrow">Matches Log</p>
                 <h2>Recorded matches</h2>
               </div>
               <button
@@ -756,6 +731,14 @@ function App() {
                           "Player 2",
                         )}
                       </strong>
+                      <button
+                        type="button"
+                        className="delete-recording-btn"
+                        onClick={() => removeRecord(recording.id)}
+                        title="Delete Match"
+                      >
+                        &times;
+                      </button>
                     </article>
                   ))}
                 </details>
