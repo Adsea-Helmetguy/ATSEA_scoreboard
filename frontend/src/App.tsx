@@ -731,14 +731,16 @@ function App() {
                           "Player 2",
                         )}
                       </strong>
-                      <button
-                        type="button"
-                        className="delete-recording-btn"
-                        onClick={() => removeRecord(recording.id)}
-                        title="Delete Match"
-                      >
-                        &times;
-                      </button>
+                      {recording.endedAt && (
+                        <button
+                          type="button"
+                          className="delete-recording-btn"
+                          onClick={() => removeRecord(recording.id)}
+                          title="Delete Match"
+                        >
+                          &times;
+                        </button>
+                      )}
                     </article>
                   ))}
                 </details>
