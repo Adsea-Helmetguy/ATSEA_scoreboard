@@ -347,8 +347,8 @@ function App() {
   }
 
   function removeRecord(id: string) {
-    if (activeRecording) {
-      console.log("No matches are allowed to be deleted while start match is active.");
+    if (activeRecording && id === activeRecording.id) {
+      console.log("You cannot delete current ActiveRecording, only those completed ones.");
       return ;
     }
     const nextRecordings = recordings.filter((recording) => recording.id !== id);

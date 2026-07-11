@@ -464,12 +464,8 @@ button:hover {
   font-size: 13px;
 }
 
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
 .history-item {
+  position: relative; /* Allows absolute positioning of the delete button relative to the item */
   display: grid;
   gap: 4px;
   border-radius: 6px;
@@ -477,10 +473,46 @@ button:disabled {
   color: #f7f2ef;
   background: #17181f;
 }
+/* Show the delete button when hovering over the recording item */
+.history-item:hover .delete-recording-btn {
+  opacity: 1;
+}
 
 .history-item span,
 .history-item small {
   color: #bfb8b4;
+}
+
+/* For the deleting of the finished record of the match */
+.delete-recording-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  min-height: unset; /* Override default button min-height */
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(228, 91, 95, 0.85); /* Semitransparent reddish background */
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.delete-recording-btn:hover {
+  background: #e45b5f; /* Brighter red on hover */
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .scoreboard {
