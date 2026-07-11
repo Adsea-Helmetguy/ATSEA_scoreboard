@@ -24,6 +24,8 @@ zip -r UnderNightInbirth2_scoreboard.zip UnderNightInbirth2_scoreboard.html imag
 */
 const STORAGE_KEY = "tkc-scoreboard-state";
 const RECORDINGS_KEY = "tkc-match-recordings";
+const TOURNAMENT_RUNNING_KEY = "tkc-tournament-running";
+const TOURNAMENT_STARTED_KEY = "tkc-tournament-started-at";
 const downloadableFiles = [
   {
     title: "Under Night In-Birth II scoreboard",
@@ -159,11 +161,21 @@ function App() {
   // const [obsElapsedSeconds, setObsElapsedSeconds] = useState(0);
 
   // ----add tournament timer state here----
-  const [isTournamentRunning, setIsTournamentRunning] = useState(false);
-  const [tournamentStartedAt, setTournamentStartedAt] = useState<number | null>(
-    null,
-  );
-  const [tournamentElapsedSeconds, setTournamentElapsedSeconds] = useState(0);
+  const [isTournamentRunning, setIsTournamentRunning] = useState<boolean>(() => {
+    return localStorage.getItem(TOURNAMENT_RUNNING_KEY) === "true";
+  });
+  const [tournamentStartedAt, setTournamentStartedAt] = useState<number | null>(() => {
+    const saved = localStorage.getItem(TOURNAMENT_STARTED_KEY);
+    return saved ? Number(saved) : null;
+  });
+  const [tournamentElapsedSeconds, setTournamentElapsedSeconds] = useState<number>(() => {
+    const running = localStorage.getItem(TOURNAMENT_RUNNING_KEY) === "true";
+    const startedAt = localStorage.getItem(TOURNAMENT_STARTED_KEY);
+    if (running && startedAt) {
+      return Math.max(0, Math.floor((Date.now() - Number(startedAt)) / 1000));
+    }
+    return 0;
+  });
   useEffect(() => {
     if (!isTournamentRunning || tournamentStartedAt === null) {
       return;
@@ -342,6 +354,10 @@ function App() {
   }
 
   function clearRecordings() {
+    if (activeRecording) {
+      console.log("Matches are ongoing, you cannot clear match history");
+      return ;
+    }
     localStorage.removeItem(RECORDINGS_KEY);
     setRecordings([]);
   }
@@ -450,9 +466,12 @@ function App() {
 
   // =====For tournament timer controls=====
   function startTournament() {
+    const now = Date.now();
     setIsTournamentRunning(true);
-    setTournamentStartedAt(Date.now());
+    setTournamentStartedAt(now);
     setTournamentElapsedSeconds(0);
+    localStorage.setItem(TOURNAMENT_RUNNING_KEY, "true");
+    localStorage.setItem(TOURNAMENT_STARTED_KEY, now.toString());
   }
 
   function stopTournament() {
@@ -460,6 +479,10 @@ function App() {
       return;
     }
     setIsTournamentRunning(false);
+    setTournamentStartedAt(null);
+    setTournamentElapsedSeconds(0);
+    localStorage.removeItem(TOURNAMENT_RUNNING_KEY);
+    localStorage.removeItem(TOURNAMENT_STARTED_KEY);
   }
   // =====For tournament timer controls=====
 
@@ -682,7 +705,6 @@ function App() {
           <button
               type="button"
               className={activeRecording ? "record-button is-recording" : "record-button"}
-              disabled={Boolean(!isTournamentRunning)}
               onClick={activeRecording ? endMatch : startMatch}
             >
               {activeRecording ? "End match" : "Start match"}
@@ -699,7 +721,7 @@ function App() {
                 type="button"
                 className="clear-history-button"
                 onClick={clearRecordings}
-                disabled={recordings.length === 0}
+                disabled={recordings.length === 0 || Boolean(activeRecording)}
               >
                 Clear history
               </button>
