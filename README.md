@@ -24,3 +24,10 @@ Render was chosen for its simplicity in deploying a persistent Node.js server
         (However since the website will contiune to run while you are using it and only close after 15 mins of inactivity,
         it's not a problem if you just keep it running throughout the tournament)
 
+
+
+### Next Objective:
+- Create a login page to prevent others from using
+- create a login database to store users
+- create session cookies for up to 4 hours for that user
+- create another database to store the recorded matches log as well as current tournament timer to sync with all users.
