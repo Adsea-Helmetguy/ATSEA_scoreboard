@@ -4,7 +4,7 @@ import babel from '@rolldown/plugin-babel'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/TKC_scoreboard/',
+  base: '/ATSEA_scoreboard/',
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] })
