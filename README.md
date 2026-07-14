@@ -7,7 +7,7 @@
 - creating database to store data
 
 ### Working website:
-https://adsea-helmetguy.github.io/TKC_scoreboard/
+https://adsea-helmetguy.github.io/ATSEA_scoreboard/
 
 Combined together with Render("https://render.com/") with websockets.
 
