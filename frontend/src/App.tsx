@@ -148,6 +148,20 @@ function formatClock(totalSeconds: number) {
     .join(":");
 }
 
+function convertTimeUnitToSeconds(
+  amount: number,
+  unit: "seconds" | "minutes" | "hours",
+) {
+  switch (unit) {
+    case "hours":
+      return amount * 3600;
+    case "minutes":
+      return amount * 60;
+    default:
+      return amount;
+  }
+}
+
 function App() {
   const [draft, setDraft] = useState<MatchState>(() => loadState());
   const [recordings, setRecordings] = useState<MatchRecording[]>(() =>
@@ -196,6 +210,14 @@ function App() {
     import.meta.env.VITE_SCOREBOARD_WS_URL ?? "ws://localhost:3001";
   const { sendState } = useScoreboardSocket(socketUrl, setDraft);
   const activeRecording = recordings.find((recording) => !recording.endedAt);
+  const [timeAdjustmentAmount, setTimeAdjustmentAmount] = useState(1);
+  const [timeAdjustmentUnit, setTimeAdjustmentUnit] = useState<
+    "seconds" | "minutes" | "hours"
+  >("seconds");
+  const completedRecordingsCount = recordings.filter(
+    (recording) => recording.endedAt,
+  ).length;
+
   const recordingGroups = useMemo<RecordingGroup[]>(() => {
     return recordings.reduce<RecordingGroup[]>((groups, recording) => {
       const dateKey = formatDateKey(recording.startedAt);
@@ -368,6 +390,36 @@ function App() {
       return ;
     }
     const nextRecordings = recordings.filter((recording) => recording.id !== id);
+    saveRecordings(nextRecordings);
+  }
+
+  function applyRecordingTimeAdjustment(direction: 1 | -1) {
+    const deltaSeconds = convertTimeUnitToSeconds(
+      timeAdjustmentAmount * direction,
+      timeAdjustmentUnit,
+    );
+
+    if (deltaSeconds === 0) {
+      return;
+    }
+
+    const nextRecordings = recordings.map((recording) => {
+      if (!recording.endedAt) {
+        return recording;
+      }
+
+      const startSeconds = recording.startedTimelineSeconds ?? 0;
+      const endSeconds =
+        recording.endedTimelineSeconds ??
+        startSeconds + getDurationSeconds(recording.startedAt, recording.endedAt);
+
+      return {
+        ...recording,
+        startedTimelineSeconds: Math.max(0, startSeconds + deltaSeconds),
+        endedTimelineSeconds: Math.max(0, endSeconds + deltaSeconds),
+      };
+    });
+
     saveRecordings(nextRecordings);
   }
 
@@ -709,6 +761,62 @@ function App() {
             >
               {activeRecording ? "End match" : "Start match"}
             </button>
+          </div>
+
+          <div className="recording-adjust-panel">
+            <div className="recording-adjust-heading">
+              <div>
+                <p className="eyebrow">Time adjust</p>
+                <h2>Adjust recorded match log time</h2>
+              </div>
+            </div>
+            <div className="recording-adjust-controls">
+              <label>
+                Amount
+                <input
+                  type="number"
+                  min="0"
+                  value={timeAdjustmentAmount}
+                  onChange={(event) =>
+                    setTimeAdjustmentAmount(Math.max(0, Number(event.target.value)))
+                  }
+                />
+              </label>
+              <label>
+                Unit
+                <select
+                  value={timeAdjustmentUnit}
+                  onChange={(event) =>
+                    setTimeAdjustmentUnit(event.target.value as
+                      | "seconds"
+                      | "minutes"
+                      | "hours")
+                  }
+                >
+                  <option value="seconds">Seconds</option>
+                  <option value="minutes">Minutes</option>
+                  <option value="hours">Hours</option>
+                </select>
+              </label>
+              <div className="recording-adjust-buttons">
+                <button
+                  type="button"
+                  className="secondary-button"
+                  disabled={completedRecordingsCount === 0}
+                  onClick={() => applyRecordingTimeAdjustment(1)}
+                >
+                  Add
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  disabled={completedRecordingsCount === 0}
+                  onClick={() => applyRecordingTimeAdjustment(-1)}
+                >
+                  Subtract
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="history-list">
