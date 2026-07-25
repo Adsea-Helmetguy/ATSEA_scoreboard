@@ -1,13 +1,95 @@
-# README
+# ATSEA Scoreboard
+## Overview
+### Problem
+- Who is affected?
+  - Tournament organizers, streamers, and event hosts who need a clear and fast scoreboard during live matches.
 
-## Instructions on how to use
-Run these two in two different terminals:
-1) npm run dev
-2) npm run server
+- What is the issue?
+  - Traditional scorekeeping can be slow, inconsistent, and difficult to display clearly in OBS or livestream setups. And ususally the streamer has to be both the scorekeeper and the scene changer for the live stream which is a lot to do among 
+  the other possibilities the streamer might also be in charge of the tournament brackets.
+  - After the tournament, the problem is that the streamer will always need to manually write and type out the details of the stream. It is manually tiring especially if the tournament takes a very long time and may even take hours to do.
 
-then go to your localhost or in the npm run dev terminal,
-write 'o' and press enter to go to the localhost website
-with your internet of choice.
+### Outcome
+- What was achieved?
+  - A web-based scoreboard system that lets users update match information, scores, rounds, and tournament timing in real time.
+  - The app includes a live overlay view that can be used with OBS and a WebSocket server for instant updates.
+  - It includes a section where you can track and record matches details live on the website so that you won't have any trouble with the youtube description.
+
+- Measurable results (if any)
+  - Fast score updates during matches.
+  - Persistent match recording history.
+  - A tournament timer for event flow tracking.
+  - An OBS-friendly overlay package for streaming use.
+
+---
+
+## Demo
+- How does the solution work from the user’s perspective?
+  1. Open the app and enter match details such as event host, game title, round, and players.
+  2. Update scores and match state from the control interface.
+  3. use either the link or download the zip files to use for your obs studio.
+  4. Start the tournament timer and save match recordings for later review.
+
+- Provide screenshots, GIFs or demo video.
+  - Add screenshots or a short demo video here once available.
+
+---
+
+## Technology Stack
+### Frontend components
+- React with TypeScript
+- Vite for development and build tooling
+- CSS for styling the scoreboard UI and overlay
+- Local storage for saving match state and recordings
+
+### Backend components
+- Node.js with Express
+- WebSocket server for real-time communication
+- TypeScript for server-side logic
+- OBS-compatible HTML overlay output
+
+---
+
+## Installation
+Ensure you are at the 'frontend' folder then:
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start the development server in one terminal:
+   ```bash
+   npm run dev
+   ```
+
+3. Start the WebSocket server in a second terminal:
+   ```bash
+   npm run server
+   ```
+
+4. Open the local Vite URL in your browser. If prompted, press "o" in the Vite terminal to open it automatically.
+
+---
+
+## Usage
+- using obs, create a new source in any scene you choose, and then create a browser source section. Inside it, choose the option for local file and then choose the index html from the zip.
+- You can also choose to use the overlay link in the website instead.
+- Use the scoreboard interface to enter or update match details.
+- Adjust player names, scores, rounds, and game information as the match progresses.
+- Click on save to store the details and update during or before matches.
+- Start the tournament timer for event flow tracking.
+- Review stored match recordings and update their timings accordingly to match the video you are about to upload on youtube.
+
+---
+
+## Project Structure
+- src/ - main React application components, hooks, styles, and types
+- src/components/ - scoreboard UI and overlay components
+- src/hooks/ - custom hooks for WebSocket communication
+- src/types/ - TypeScript type definitions for scoreboard, OBS, and recordings
+- server/ - Node.js and WebSocket server implementation
+- public/OBS_html_file/ - OBS overlay HTML package and assets
+- docs/ai-dev/ - notes and documentation about the AI-assisted development workflow
 
 
 
