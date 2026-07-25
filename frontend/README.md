@@ -27,11 +27,14 @@
 - How does the solution work from the user’s perspective?
   1. Open the app and enter match details such as event host, game title, round, and players.
   2. Update scores and match state from the control interface.
-  3. use either the link or download the zip files to use for your obs studio.
+  3. Use either the link or download the .zip files to use the scoreboard in OBS Studio.
   4. Start the tournament timer and save match recordings for later review.
 
 - Provide screenshots, GIFs or demo video.
-  - Add screenshots or a short demo video here once available.
+  - Screenshots are available in `public/OBS_html_file/UnderNightInbirth2_scoreboard/images/`:
+    - `Screenshot 2026-07-25 151243.png`
+    - `Screenshot 2026-07-25 151627.png`
+    - `Screenshot 2026-07-25 151642.png`
 
 ---
 
